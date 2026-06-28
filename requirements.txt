@@ -1,0 +1,11 @@
+flask
+flask-sqlalchemy
+flask-login
+tensorflow
+numpy
+pillow
+fpdf
+python-dotenv
+opencv-python
+flask-mail
+groq

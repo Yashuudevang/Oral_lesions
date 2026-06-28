@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Machine Learning
+*.h5
+*.pkl
+*.joblib
+
+# Temporary files
+*.tmp
+*.temp
+*_heatmap.jpg
+*_temp.jpg
+
+# Reports and uploads (keep structure but ignore content)
+static/uploads/*.jpg
+static/uploads/*.jpeg
+static/uploads/*.png
+static/reports/*.pdf
+static/report_*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

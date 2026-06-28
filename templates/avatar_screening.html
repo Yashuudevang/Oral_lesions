@@ -1,0 +1,936 @@
+{% extends 'base.html' %}
+{% block title %}AI Virtual Doctor{% endblock %}
+
+{% block container_wrapper %}
+<!-- Two-Column Responsive Layout -->
+<div class="virtual-doctor-layout flex-column flex-lg-row position-relative overflow-hidden">
+
+    <!-- Ambient Background Glows -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden pointer-events-none" style="z-index: 0;">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <!-- LEFT PANEL: Text Box & Controls (Order 2 on Mobile, Order 1 on Desktop) -->
+    <div class="text-panel-left order-2 order-lg-1 position-relative z-1">
+
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-start mb-4 fade-in-up" style="animation-delay: 0.1s;">
+            <div class="glass-panel p-4 rounded-4 shadow-glass w-100 border-glow">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <div
+                            class="ai-icon-container bg-info bg-opacity-10 p-3 rounded-circle border border-info border-opacity-25">
+                            <i class="fas fa-microscope text-info fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1 fw-black text-white letter-spacing-tight">Dr. Aria</h2>
+                            <p class="text-info opacity-75 mb-0 small text-uppercase letter-spacing-wide fw-bold">Oral
+                                Cancer Screening Assistant</p>
+                        </div>
+                    </div>
+                    <!-- Dynamic Status Indicator -->
+                    <div id="status-indicator"
+                        class="glass-panel px-4 py-2 rounded-pill shadow-glass d-none align-items-center gap-2">
+                        <div id="listen-indicator" class="pulse-animation bg-danger rounded-circle"
+                            style="width: 12px; height: 12px;"></div>
+                        <div id="recording-status" class="text-danger fw-bold small mb-0 pulse-text">Listening...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Box -->
+        <div id="chat-box"
+            class="glass-panel rounded-4 p-4 p-md-5 shadow-glass position-relative overflow-hidden transition-all mb-4 fade-in-up border-glow"
+            style="border-left: 4px solid #0dcaf0; animation-delay: 0.2s;">
+            <!-- Ambient talking glow effect -->
+            <div id="chat-glow"
+                class="position-absolute top-50 start-50 translate-middle w-100 h-100 rounded opacity-0 transition-opacity z-0"
+                style="background: radial-gradient(circle, rgba(13,202,240,0.15) 0%, transparent 60%); pointer-events: none;">
+            </div>
+
+            <div class="position-relative z-1 d-flex flex-column h-100">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="pulsing-recording-dot"></span>
+                    <span class="text-info fs-6 fw-bold text-uppercase letter-spacing-wide">Live Transcript</span>
+                </div>
+                <div class="chat-content flex-grow-1 d-flex flex-column justify-content-end">
+                    <div id="ai-subtitle" class="fs-4 text-white fw-light"
+                        style="line-height: 1.7; letter-spacing: 0.3px;">
+                        <span class="opacity-50 text-light italic">Click 'Start Consultation' to initialize secure
+                            connection...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls & Uploads -->
+        <div class="mt-auto mb-3 fade-in-up" style="animation-delay: 0.3s;">
+            <div class="d-flex gap-3 justify-content-start w-100 align-items-center">
+                <button id="btn-start"
+                    class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-glass fs-5 fw-bold w-100 btn-glow"
+                    style="background: linear-gradient(135deg, #4361ee 0%, #0dcaf0 100%); border: none;">
+                    <i class="fas fa-play me-2"></i> Start Consultation
+                </button>
+
+                <button id="btn-mic"
+                    class="btn btn-danger btn-lg rounded-circle shadow-glass d-flex align-items-center justify-content-center floating-mic d-none mic-glow"
+                    style="width: 72px; height: 72px; border: none; flex-shrink: 0; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    <i class="fas fa-microphone fa-lg text-white"></i>
+                </button>
+            </div>
+
+            <!-- Hidden Form for Image Uploads triggered by AI -->
+            <div id="image-upload-section"
+                class="w-100 p-4 border border-info rounded-4 glass-panel d-none shadow-glass position-relative overflow-hidden mt-4 slide-up-animation">
+                <h5 class="text-warning mb-3 fw-bold"><i class="fas fa-camera me-2"></i>Upload Mouth Images</h5>
+                <form id="avatar-image-form" enctype="multipart/form-data">
+                    <div class="d-flex flex-column gap-2 mb-3">
+                        <div><input type="file" class="form-control form-control-sm bg-dark text-white border-secondary"
+                                name="image1" accept="image/*" required></div>
+                        <div><input type="file" class="form-control form-control-sm bg-dark text-white border-secondary"
+                                name="image2" accept="image/*" required></div>
+                        <div><input type="file" class="form-control form-control-sm bg-dark text-white border-secondary"
+                                name="image3" accept="image/*" required></div>
+                    </div>
+                    <button type="button" id="btn-submit-images"
+                        class="btn btn-success w-100 rounded-pill py-2 fw-bold shadow-sm custom-hover">
+                        <i class="fas fa-cloud-upload-alt me-2"></i> Submit to AI
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: Doctor Avatar (Order 1 on Mobile, Order 2 on Desktop) -->
+    <div class="avatar-panel-right order-1 order-lg-2 position-relative z-1">
+        <div id="avatar-image-wrapper">
+            <!-- Three.js will inject canvas here -->
+        </div>
+
+        <!-- Subtle shadow gradient at the bottom to blend avatar with panel -->
+        <div class="position-absolute bottom-0 start-0 w-100 h-25 pointer-events-none"
+            style="background: linear-gradient(to top, rgba(2,6,23,0.9) 0%, transparent 100%); z-index: 2;"></div>
+    </div>
+
+    <!-- Hidden Audio for TTS -->
+    <audio id="tts-audio" style="display: none;"></audio>
+</div>
+
+<style>
+    /* Ambient Background Enhancements */
+    .ambient-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: float-orb 15s infinite ease-in-out alternate;
+    }
+
+    .orb-1 {
+        width: 400px;
+        height: 400px;
+        background: rgba(67, 97, 238, 0.4);
+        top: -100px;
+        left: -100px;
+        animation-delay: 0s;
+    }
+
+    .orb-2 {
+        width: 300px;
+        height: 300px;
+        background: rgba(13, 202, 240, 0.3);
+        bottom: 10%;
+        right: -50px;
+        animation-delay: -5s;
+    }
+
+    .orb-3 {
+        width: 250px;
+        height: 250px;
+        background: rgba(139, 92, 246, 0.3);
+        top: 40%;
+        left: 30%;
+        animation-delay: -10s;
+    }
+
+    @keyframes float-orb {
+        0% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        50% {
+            transform: translate(30px, -40px) scale(1.1);
+        }
+
+        100% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+    }
+
+    /* Two-Column Responsive Layout Core */
+    .virtual-doctor-layout {
+        display: flex;
+        min-height: calc(100vh - 72px);
+        /* Fallback minus navbar approx */
+        min-height: calc(100dvh - 72px);
+        background: #020617;
+        /* Solid extremely dark blue base */
+    }
+
+    .text-panel-left {
+        width: 100%;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding: clamp(1.5rem, 5vw, 4rem);
+        overflow-y: auto;
+    }
+
+    .avatar-panel-right {
+        position: relative;
+        width: 100%;
+        min-height: 45vh;
+        /* Larger on mobile */
+        flex-shrink: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* Subtle spotlight effect behind avatar */
+        background: radial-gradient(circle at 50% 40%, rgba(67, 97, 238, 0.15) 0%, #020617 70%);
+    }
+
+    #avatar-image-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #avatar-image-wrapper canvas {
+        width: 100% !important;
+        height: 100% !important;
+        outline: none;
+    }
+
+    @media (min-width: 992px) {
+        .virtual-doctor-layout {
+            height: calc(100vh - 72px);
+            height: calc(100dvh - 72px);
+            overflow: hidden;
+        }
+
+        .text-panel-left {
+            width: 50%;
+            height: 100%;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: none;
+            justify-content: center;
+        }
+
+        .avatar-panel-right {
+            width: 50%;
+            height: 100%;
+            border-bottom: none;
+        }
+    }
+
+    @media (min-width: 1400px) {
+        .text-panel-left {
+            width: 45%;
+            padding: 4rem 8%;
+        }
+
+        .avatar-panel-right {
+            width: 55%;
+        }
+    }
+
+    /* Override parent scrolling to lock the view */
+    body,
+    html {
+        overflow: hidden;
+    }
+
+    /* Premium Glassmorphism Classes */
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .border-glow {
+        box-shadow: 0 0 20px rgba(13, 202, 240, 0.05), inset 0 0 20px rgba(13, 202, 240, 0.05);
+    }
+
+    .shadow-glass {
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    /* Typography Utility Classes */
+    .fw-black {
+        font-weight: 900;
+    }
+
+    .letter-spacing-tight {
+        letter-spacing: -0.05em;
+    }
+
+    .letter-spacing-wide {
+        letter-spacing: 0.1em;
+    }
+
+    .italic {
+        font-style: italic;
+    }
+
+    /* Custom Scrollbar for Chat box */
+    #chat-box {
+        flex-grow: 1;
+        max-height: 45vh;
+        /* Adaptive max height */
+        min-height: 250px;
+        overflow-y: auto;
+    }
+
+    #chat-box::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #chat-box::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #chat-box::-webkit-scrollbar-thumb {
+        background: rgba(13, 202, 240, 0.3);
+        border-radius: 10px;
+    }
+
+    #chat-box::-webkit-scrollbar-thumb:hover {
+        background: rgba(13, 202, 240, 0.6);
+    }
+
+    /* Animations */
+    @keyframes pulse-dot {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+        }
+    }
+
+    .pulse-animation {
+        animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .pulse-text {
+        animation: blink 1.5s infinite;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .slide-up-animation {
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in-up {
+        opacity: 0;
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .pulsing-recording-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: #0dcaf0;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #0dcaf0;
+        animation: pulse-dot-info 2s infinite;
+    }
+
+    @keyframes pulse-dot-info {
+        0% {
+            transform: scale(0.9);
+            box-shadow: 0 0 0 0 rgba(13, 202, 240, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 8px rgba(13, 202, 240, 0);
+        }
+
+        100% {
+            transform: scale(0.9);
+            box-shadow: 0 0 0 0 rgba(13, 202, 240, 0);
+        }
+    }
+
+    .transition-opacity {
+        transition: opacity 0.5s ease;
+    }
+
+    .transition-all {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Interactive States */
+    .btn-glow {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(67, 97, 238, 0.6), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .mic-glow {
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .floating-mic {
+        animation: float-mic 4s ease-in-out infinite;
+    }
+
+    @keyframes float-mic {
+        0% {
+            transform: translateY(0px) scale(1);
+        }
+
+        50% {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(220, 53, 69, 0.5);
+        }
+
+        100% {
+            transform: translateY(0px) scale(1);
+        }
+    }
+
+    .floating-mic:hover {
+        animation: none;
+        transform: scale(1.1) !important;
+    }
+
+    .custom-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(25, 135, 84, 0.4) !important;
+    }
+
+    /* AI States */
+    .avatar-talking #chat-glow {
+        opacity: 1;
+        animation: talking-glow 1.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes talking-glow {
+        from {
+            opacity: 0.4;
+            transform: translate(-50%, -50%) scale(0.98);
+        }
+
+        to {
+            opacity: 0.8;
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+    }
+
+    .avatar-thinking #chat-box {
+        border-left-color: #ffc107 !important;
+    }
+</style>
+
+<!-- Import maps polyfill -->
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnStart = document.getElementById('btn-start');
+        const btnMic = document.getElementById('btn-mic');
+        const subtitle = document.getElementById('ai-subtitle');
+        const avatarContainer = document.getElementById('avatar-image-wrapper'); // Used for class toggling visually
+        const statusIndicator = document.getElementById('status-indicator');
+        const imageUploadSection = document.getElementById('image-upload-section');
+        const btnSubmitImages = document.getElementById('btn-submit-images');
+        const chatBox = document.getElementById('chat-box');
+
+        // ==== THREE.JS FULL-SCREEN Setup ====
+        const container = document.getElementById('avatar-image-wrapper');
+        container.innerHTML = ''; // clear
+
+        const scene = new THREE.Scene();
+
+        // Adjust Camera for a prominent, chest-up view, centered differently for full screen
+        const camera = new THREE.PerspectiveCamera(
+            30, // Narrow FOV for portrait feel
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+        );
+        // Move camera further back and slightly up for the larger full viewport
+        camera.position.set(0, 1.45, 2.8);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1; // Slightly brighter
+        container.appendChild(renderer.domElement);
+
+        // Subtle Env mapping
+        try {
+            const pmremGenerator = new THREE.PMREMGenerator(renderer);
+            new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr', function (texture) {
+                const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+                scene.environment = envMap;
+                texture.dispose();
+                pmremGenerator.dispose();
+            });
+        } catch (e) {
+            console.warn("Env map skipped", e);
+        }
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.enableZoom = false;
+        controls.enablePan = false;
+        // Lock controls to look directly at the face/chest gracefully
+        controls.target.set(0, 1.35, 0);
+        controls.minDistance = 2.0;
+        controls.maxDistance = 3.5;
+        // Restrict massive rotation to keep it professional
+        controls.minAzimuthAngle = -Math.PI / 8;
+        controls.maxAzimuthAngle = Math.PI / 8;
+        controls.maxPolarAngle = Math.PI / 1.8;
+        controls.minPolarAngle = Math.PI / 2.2;
+        controls.update();
+
+        // Ambient Lights
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+        hemiLight.position.set(0, 20, 0);
+        scene.add(hemiLight);
+
+        // Key light hitting the face
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+        keyLight.position.set(2, 5, 5);
+        scene.add(keyLight);
+
+        // Fill light for soft shadows
+        const fillLight = new THREE.DirectionalLight(0xaaccff, 1.2);
+        fillLight.position.set(-2, 3, 4);
+        scene.add(fillLight);
+
+        // Add a rim light to separate avatar from dark background
+        const rimLight = new THREE.SpotLight(0x4361ee, 3);
+        rimLight.position.set(0, 5, -5);
+        rimLight.lookAt(0, 1.35, 0);
+        rimLight.angle = 0.5;
+        rimLight.penumbra = 0.5;
+        scene.add(rimLight);
+
+        const loader = new GLTFLoader();
+        let headMesh;
+        let jawIndex;
+
+        // Load the 3D Doctor
+        loader.load(
+            "{{ url_for('static', filename='models/doctor_avatar.glb') }}",
+            (gltf) => {
+                const model = gltf.scene;
+                // Scale model up slightly for fullscreen framing
+                model.scale.set(1.3, 1.3, 1.3);
+                // Lower model so head sits in upper center
+                model.position.set(0, -0.8, 0);
+                scene.add(model);
+
+                // Setup Stethoscope (ported from previous Three.js build)
+                const stethoscopeGroup = new THREE.Group();
+                const tubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.3 });
+
+                const buildTube = (points) => {
+                    return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 25, 0.008, 8, false), tubeMaterial);
+                };
+
+                stethoscopeGroup.add(buildTube([
+                    new THREE.Vector3(0.18, 0.48, 0.12), new THREE.Vector3(0.25, 0.38, 0.08),
+                    new THREE.Vector3(0.3, 0.28, 0.02), new THREE.Vector3(0.25, 0.18, -0.03),
+                    new THREE.Vector3(0.15, 0.12, -0.08), new THREE.Vector3(0.05, 0.08, -0.12)
+                ]));
+
+                stethoscopeGroup.add(buildTube([
+                    new THREE.Vector3(0.22, 0.48, 0.12), new THREE.Vector3(0.29, 0.38, 0.08),
+                    new THREE.Vector3(0.34, 0.28, 0.02), new THREE.Vector3(0.29, 0.18, -0.03),
+                    new THREE.Vector3(0.19, 0.12, -0.08), new THREE.Vector3(0.09, 0.08, -0.12)
+                ]));
+
+                const chestPieceMaterial = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.2, metalness: 0.9 });
+                const chestPiece = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.03, 16), chestPieceMaterial);
+                chestPiece.position.set(0.07, 0.08, -0.12);
+                chestPiece.rotation.x = Math.PI / 2;
+                stethoscopeGroup.add(chestPiece);
+
+                const diaphragm = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 16), new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1, metalness: 0.95 }));
+                diaphragm.position.set(0.07, 0.08, -0.12);
+                diaphragm.rotation.x = Math.PI / 2;
+                stethoscopeGroup.add(diaphragm);
+
+                const connector = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), chestPieceMaterial);
+                connector.position.set(0.07, 0.08, -0.12);
+                stethoscopeGroup.add(connector);
+
+                stethoscopeGroup.add(buildTube([new THREE.Vector3(0.18, 0.48, 0.12), new THREE.Vector3(0.15, 0.52, 0.15), new THREE.Vector3(0.12, 0.55, 0.18)]));
+                stethoscopeGroup.add(buildTube([new THREE.Vector3(0.22, 0.48, 0.12), new THREE.Vector3(0.25, 0.52, 0.15), new THREE.Vector3(0.28, 0.55, 0.18)]));
+
+                const earPieceMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.5, metalness: 0.4 });
+                const leftEarPiece = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), earPieceMaterial);
+                leftEarPiece.position.set(0.12, 0.55, 0.18);
+                stethoscopeGroup.add(leftEarPiece);
+
+                const rightEarPiece = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), earPieceMaterial);
+                rightEarPiece.position.set(0.28, 0.55, 0.18);
+                stethoscopeGroup.add(rightEarPiece);
+
+                stethoscopeGroup.position.set(0.08, 0.32, 0.05);
+                model.add(stethoscopeGroup);
+
+                // Material / Cosmetics adjustments
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        if (child.scale.x > 2 || child.scale.y > 2 || child.scale.z > 2) {
+                            child.scale.set(1, 1, 1);
+                        }
+                        if (child.name.toLowerCase().includes("hair")) {
+                            child.material = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.6, metalness: 0.1 });
+                            child.material.needsUpdate = true;
+                            if (child.geometry) child.scale.set(1.1, 1.05, 1.1);
+                        }
+                        if (child.name.toLowerCase().includes("eyebrow") || child.name.toLowerCase().includes("brow")) {
+                            child.material = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.9, metalness: 0.0 });
+                            child.material.needsUpdate = true;
+                        }
+                        // Morph targets binding for lipsync
+                        if (child.morphTargetDictionary && (child.name === "Wolf3D_Head" || !headMesh)) {
+                            headMesh = child;
+                            const morphs = child.morphTargetDictionary;
+                            jawIndex = morphs["jawOpen"] ?? morphs["JawOpen"] ?? morphs["mouthOpen"] ?? morphs["mouth"];
+                        }
+                    }
+                });
+            },
+            undefined,
+            (error) => console.error('Error loading avatar model:', error)
+        );
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            const wrapper = document.getElementById('avatar-image-wrapper');
+            if (wrapper) {
+                const width = wrapper.clientWidth;
+                const height = wrapper.clientHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            }
+        });
+
+        // ==== END THREE.JS Setup ====
+
+        let chatHistory = [];
+        let isRecording = false;
+        let recognition = null;
+        let synth = window.speechSynthesis;
+        let collectedSymptoms = "";
+        let talkingInterval;
+
+        // Auto-scroll chat box helper
+        function scrollToBottom() {
+            if (chatBox) {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        // Initialize Web Speech API
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isRecording = true;
+                btnMic.classList.remove('d-none');
+                btnMic.classList.replace('btn-secondary', 'btn-danger'); // fallback if styled that way
+                statusIndicator.classList.remove('d-none');
+                statusIndicator.classList.add('d-flex');
+            };
+
+            recognition.onerror = (e) => {
+                console.error('Speech recognition error', e);
+                stopRecordingState();
+            };
+
+            recognition.onend = () => {
+                stopRecordingState();
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                subtitle.innerHTML = `<span class="text-white opacity-75">Dr. Aria:</span> ${transcript}`;
+                scrollToBottom();
+                sendToAI(transcript);
+            };
+        } else {
+            console.warn("Speech Recognition not supported in this browser.");
+        }
+
+        function stopRecordingState() {
+            isRecording = false;
+            btnMic.classList.replace('btn-danger', 'btn-secondary');
+            statusIndicator.classList.remove('d-flex');
+            statusIndicator.classList.add('d-none');
+        }
+
+        // Action Handlers
+        btnStart.addEventListener('click', () => {
+            btnStart.classList.add('d-none');
+            btnMic.classList.remove('d-none');
+            subtitle.innerHTML = "<span class='text-white opacity-75'>Initializing connection with Dr. Aria...</span> <i class='fas fa-circle-notch fa-spin ms-2 text-info'></i>";
+            sendToAI("Hello Doctor, I am ready for my oral screening.");
+        });
+
+        btnMic.addEventListener('click', () => {
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                synth.cancel();
+                stopAvatarTalking();
+                recognition.start();
+            }
+        });
+
+        async function sendToAI(userMessage) {
+            if (userMessage.length > 20) {
+                collectedSymptoms += userMessage + ". ";
+            }
+
+            const formData = new FormData();
+            formData.append('message', userMessage);
+            formData.append('history', JSON.stringify(chatHistory));
+
+            subtitle.innerHTML = `<span class="text-secondary opacity-75">Dr. Aria is thinking</span> <i class="fas fa-circle-notch fa-spin ms-1 text-warning"></i>`;
+            avatarContainer.classList.add('avatar-thinking');
+
+            try {
+                const response = await fetch('/api/avatar_chat', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                avatarContainer.classList.remove('avatar-thinking');
+
+                const data = await response.json();
+
+                if (data.error) {
+                    subtitle.innerHTML = `<span class="text-danger">Connection Error: ${data.error}</span>`;
+                    return;
+                }
+
+                if (userMessage) chatHistory.push({ text: userMessage, isAi: false });
+                chatHistory.push({ text: data.response, isAi: true });
+
+                subtitle.innerHTML = `<span class="text-white">${data.response}</span>`;
+                scrollToBottom();
+                speakText(data.response);
+
+                if (data.response.toLowerCase().includes("upload 3 clear images") || data.response.toLowerCase().includes("upload three images")) {
+                    setTimeout(() => {
+                        imageUploadSection.classList.remove('d-none');
+                        // Scroll to see the form if on small screen
+                        imageUploadSection.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    }, 3000);
+                }
+
+                if (data.is_complete) {
+                    subtitle.innerHTML = '<span class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i> Screening complete. Generating report...</span>';
+                }
+
+            } catch (error) {
+                console.error("Chat Error:", error);
+                subtitle.innerHTML = '<span class="text-danger">Network Error. Please verify your connection.</span>';
+                avatarContainer.classList.remove('avatar-thinking');
+            }
+        }
+
+        // Avatar Lip-Sync Methods
+        function startAvatarTalking() {
+            avatarContainer.classList.add('avatar-talking');
+        }
+
+        function stopAvatarTalking() {
+            avatarContainer.classList.remove('avatar-talking');
+            clearInterval(talkingInterval);
+            if (headMesh && jawIndex !== undefined) {
+                headMesh.morphTargetInfluences[jawIndex] = 0;
+            }
+        }
+
+        function speakText(text) {
+            if (!synth) return;
+
+            synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            const voices = synth.getVoices();
+            const preferredVoice = voices.find(v => v.name.includes('Female') && v.lang.includes('en')) || voices[0];
+            if (preferredVoice) utterance.voice = preferredVoice;
+
+            utterance.rate = 0.95;
+            utterance.pitch = 1.0;
+
+            utterance.onstart = () => {
+                startAvatarTalking();
+                if (headMesh && jawIndex !== undefined) {
+                    talkingInterval = setInterval(() => {
+                        headMesh.morphTargetInfluences[jawIndex] = 0.25 + Math.random() * 0.6;
+                    }, 80); // slightly faster update for realism
+                }
+            };
+
+            utterance.onend = () => stopAvatarTalking();
+            utterance.onerror = () => stopAvatarTalking();
+
+            synth.speak(utterance);
+        }
+
+        synth.onvoiceschanged = () => { synth.getVoices(); };
+
+        // Handle Image Form Extraction
+        btnSubmitImages.addEventListener('click', async () => {
+            btnSubmitImages.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> Analyzing...';
+            btnSubmitImages.disabled = true;
+
+            const formObj = document.getElementById('avatar-image-form');
+            const formData = new FormData(formObj);
+
+            try {
+                const summaryFormData = new FormData();
+                summaryFormData.append('history', JSON.stringify(chatHistory));
+
+                const summaryResponse = await fetch('/api/avatar_summary', {
+                    method: 'POST',
+                    body: summaryFormData
+                });
+
+                const summaryData = await summaryResponse.json();
+
+                if (summaryData.symptoms) {
+                    formData.append('pain_level', summaryData.symptoms.pain_level || 'Not provided');
+                    formData.append('bleeding', summaryData.symptoms.bleeding || 'Not provided');
+                    formData.append('swelling', summaryData.symptoms.swelling || 'Not provided');
+                    formData.append('duration', summaryData.symptoms.duration || 'Not provided');
+                    formData.append('history', summaryData.symptoms.habits || 'Not provided');
+                } else {
+                    formData.append('extra_details', "Symptoms extracted from AI Chat: " + collectedSymptoms);
+                    formData.append('pain_level', 'Unknown');
+                    formData.append('history', 'Gathered via Avatar');
+                }
+
+                btnSubmitImages.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Generating Report...';
+
+                // Submit to standard image predictor
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    const html = await response.text();
+                    document.open();
+                    document.write(html);
+                    document.close();
+                }
+            } catch (e) {
+                console.error(e);
+                btnSubmitImages.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error. Try Again';
+                btnSubmitImages.disabled = false;
+            }
+        });
+    });
+</script>
+{% endblock %}
