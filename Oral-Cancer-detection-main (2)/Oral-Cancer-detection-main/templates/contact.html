@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card fade-in" style="border-radius: 8px;">
+        <div class="card-body p-5">
+          <div class="text-center mb-5">
+            <h2 class="gradient-text mb-3">
+              <i class="bi bi-envelope-fill me-2"></i>Contact Us
+            </h2>
+            <p class="text-muted">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-4 text-center">
+              <div class="p-4 rounded" style="background: var(--cvat-bg-secondary); border: 1px solid var(--cvat-border-light);">
+                <i class="bi bi-geo-alt-fill feature-icon mb-3" style="font-size: 2.5rem;"></i>
+                <h5 class="fw-bold">Address</h5>
+                <p class="text-muted small mb-0">GM University<br>Team GM Halamma</p>
+              </div>
+            </div>
+            
+            <div class="col-md-4 text-center">
+              <div class="p-4 rounded" style="background: var(--cvat-bg-secondary); border: 1px solid var(--cvat-border-light);">
+                <i class="bi bi-envelope-fill feature-icon mb-3" style="font-size: 2.5rem;"></i>
+                <h5 class="fw-bold">Email</h5>
+                <p class="text-muted small mb-0">info@oralcare.com<br>support@oralcare.com</p>
+              </div>
+            </div>
+            
+            <div class="col-md-4 text-center">
+              <div class="p-4 rounded" style="background: var(--cvat-bg-secondary); border: 1px solid var(--cvat-border-light);">
+                <i class="bi bi-clock-fill feature-icon mb-3" style="font-size: 2.5rem;"></i>
+                <h5 class="fw-bold">Hours</h5>
+                <p class="text-muted small mb-0">24/7 Available<br>Online Support</p>
+              </div>
+            </div>
+          </div>
+
+          <form class="mt-4">
+            <div class="mb-3">
+              <label for="name" class="form-label fw-bold">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label fw-bold">Email</label>
+              <input type="email" class="form-control" id="email" placeholder="your.email@example.com" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="subject" class="form-label fw-bold">Subject</label>
+              <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="message" class="form-label fw-bold">Message</label>
+              <textarea class="form-control" id="message" rows="5" placeholder="Your message here..." required></textarea>
+            </div>
+            
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-send-fill me-2"></i>Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %}
+

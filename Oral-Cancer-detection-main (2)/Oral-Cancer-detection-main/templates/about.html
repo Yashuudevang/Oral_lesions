@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <!-- Hero Section -->
+  <div class="text-center mb-5 fade-in">
+    <h1 class="display-4 gradient-text mb-3">About Oral.Care</h1>
+    <p class="lead text-muted">Revolutionizing oral cancer screening with AI-powered technology</p>
+  </div>
+
+  <!-- Problem Section -->
+  <div class="row mb-5 align-items-center scroll-reveal">
+    <div class="col-md-7">
+      <div class="card h-100" style="border-radius: 8px;">
+        <div class="card-body p-5">
+          <h2 class="fw-bold mb-4 gradient-text">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>The Problem
+          </h2>
+
+          <p class="mb-3">
+            Cancer today is spreading at epidemic proportions. The stress this puts
+            on patients, doctors and the healthcare system as a whole isn't sustainable.
+            As per the NHP 2013 report, <strong>70% of the Indian population</strong> lives in rural areas,
+            while only <strong>1/3rd of our government doctors</strong> can be found in rural India.
+          </p>
+
+          <p class="mb-3">
+            For cancer patients this translates into a severe shortfall of expert oral oncologists  
+            for screening with only <strong>1 doctor for 10,000+ patients</strong>.
+            Current oral cancer screening devices are expensive and can only be operated by an expert,
+            making them inaccessible in most regions.
+          </p>
+
+          <p class="mb-0">
+            So how can we make accessible, affordable and universally available oral healthcare screening a reality?
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5 text-center scroll-reveal">
+      <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+        <img src="{{ url_for('static', filename='img/stat3.png') }}"
+             class="img-fluid"
+             alt="Cancer Statistics">
+        <div class="card-body">
+          <p class="text-muted small mb-0">Overview: the density of cancer cases across the world.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Solution Section -->
+  <div class="row mb-5 align-items-center scroll-reveal">
+    <div class="col-md-7 order-md-2">
+      <div class="card h-100" style="border-radius: 8px;">
+        <div class="card-body p-5">
+          <h2 class="fw-bold mb-4 gradient-text">
+            <i class="bi bi-lightbulb-fill me-2"></i>Our Solution
+          </h2>
+
+          <p class="mb-3">
+            Understanding that oral cancer affects not just patients but also doctors,
+            academics, hospitals, pharmacies, NGOs, and other stakeholders,
+            we've developed a comprehensive solution.
+          </p>
+
+          <p class="mb-3">
+            Our <strong>AI-powered application</strong> utilizes advanced machine learning to analyze images of the oral cavity,
+            identifying potential lesions and abnormalities with high accuracy.
+          </p>
+
+          <p class="mb-0">
+            While not a replacement for professional medical advice, the app provides users with
+            critical, actionable information promptly, empowering them to make informed decisions
+            quickly and affordably.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5 order-md-1 text-center scroll-reveal">
+      <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+        <img src="{{ url_for('static', filename='img/stat2.jpg') }}"
+             alt="Person Using App"
+             class="img-fluid">
+        <div class="card-body">
+          <p class="text-muted small mb-0">The solution is now in your hands.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission Section -->
+  <div class="row mb-5 scroll-reveal">
+    <div class="col-12">
+      <div class="card gradient-bg text-white" style="border-radius: 8px;">
+        <div class="card-body p-5 text-center">
+          <h2 class="mb-4">
+            <i class="bi bi-bullseye me-2"></i>Our Mission
+          </h2>
+          <p class="lead mb-0">
+            To make oral cancer screening accessible, affordable, and available to everyone, 
+            regardless of their location or economic status. We believe that early detection 
+            saves lives, and technology should be a tool for good.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Section -->
+  <div class="row mb-5 scroll-reveal">
+    <div class="col-12 text-center mb-4">
+      <h2 class="gradient-text">Developed By</h2>
+    </div>
+    <div class="col-12">
+      <div class="card shadow-lg border-0 text-center" style="border-radius: 20px;">
+        <div class="card-body p-5">
+          <h3 class="mb-3">GM University</h3>
+          <p class="text-muted mb-0">Team GM Halamma</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<script>
+// Scroll reveal animation
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.scroll-reveal').forEach(el => {
+  observer.observe(el);
+});
+</script>
+
+{% endblock %}

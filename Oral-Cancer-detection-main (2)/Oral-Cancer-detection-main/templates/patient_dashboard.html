@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}My Records{% endblock %}
+{% block content %}
+<h2 class="mb-3">My Records</h2>
+
+{% if patient_records and patient_records|length %}
+  <div class="row g-3">
+    {% for r in patient_records %}
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ r.prediction }}</h5>
+            <div class="text-muted small mb-2">Timestamp: {{ r.timestamp }}</div>
+            <div>Confidence: {{ r.confidence }}%</div>
+            <div>Status: {{ r.status }}</div>
+            {% if r.image_path %}
+              <img class="img-fluid mt-2 rounded border" src="{{ '/' + r.image_path }}" alt="uploaded">
+            {% endif %}
+            <hr>
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-outline-primary btn-sm" href="{{ url_for('chat', timestamp=r.timestamp) }}">Open Chat</a>
+
+              <!-- Patient PDF -->
+              <form action="{{ url_for('patient_download_pdf') }}" method="post">
+                <input type="hidden" name="prediction" value="{{ r.prediction }}">
+                <input type="hidden" name="confidence" value="{{ r.confidence }}">
+                <input type="hidden" name="image_path" value="{{ r.image_path }}">
+                <input type="hidden" name="timestamp" value="{{ r.timestamp }}">
+                <button class="btn btn-primary btn-sm">Download PDF</button>
+              </form>
+{{ url_for('download_pdf') }}
+
+              <!-- Upload voice note -->
+              <!-- <form action="{{ url_for('upload_audio') }}" method="post" enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
+                <input type="hidden" name="timestamp" value="{{ r.timestamp }}">
+                <input class="form-control form-control-sm" type="file" name="audio" accept="audio/*" required>
+                <button class="btn btn-outline-secondary btn-sm">Upload Audio</button>
+              </form> -->
+          
+            {% if r.doctor_replies %}
+              <div class="mt-3 small">
+                <strong>Doctor replies:</strong>
+                {% for m in r.doctor_replies %}
+                  <div>• {{ m.time }} — {{ m.message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if r.patient_replies %}
+              <div class="mt-2 small">
+                <strong>Your messages:</strong>
+                {% for m in r.patient_replies %}
+                  <div>• {{ m.time }} — {{ m.message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No records yet. <a href="{{ url_for('start_screening') }}">Start a screening</a>.</div>
+{% endif %}
+{% endblock %}
