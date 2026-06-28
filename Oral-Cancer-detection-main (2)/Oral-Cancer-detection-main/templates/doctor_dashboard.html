@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Doctor Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-3">Doctor Dashboard</h2>
+
+{% if records and records|length %}
+  <div class="table-responsive">
+    <table class="table align-middle table-striped">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>User</th>
+          <th>Prediction</th>
+          <th>Conf.</th>
+          <th>Status</th>
+          <th>Follow-up</th>
+          <th>Image</th>
+          <th>Audio</th>
+          <th>Chat</th>
+          <th>PDF</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for r in records %}
+        <tr>
+          <td class="text-monospace">{{ r.timestamp }}</td>
+          <td>{{ r.username or "-" }}</td>
+          <td>{{ r.prediction }}</td>
+          <td>{{ r.confidence }}%</td>
+          <td>{{ r.status }}</td>
+          <td>
+            {% if r.follow_up %}<span class="badge bg-warning text-dark">Flagged</span>{% else %}-{% endif %}
+          </td>
+          <td>
+            {% if r.image_path %}
+              <a class="btn btn-sm btn-outline-secondary" href="{{ '/' + r.image_path }}" target="_blank">View</a>
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            {% if r.audio_path %}
+              <audio controls style="width:180px">
+                <source src="{{ '/' + r.audio_path }}">
+              </audio>
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('chat_doctor', timestamp=r.timestamp) }}">Open</a>
+          </td>
+          <td>
+            {% if r.pdf_path %}
+              <a class="btn btn-sm btn-outline-success" href="{{ '/' + r.pdf_path }}">Open</a>
+            {% else %}-{% endif %}
+          </td>
+          <td class="d-flex gap-1">
+            <form action="{{ url_for('flag_follow_up') }}" method="post">
+              <input type="hidden" name="timestamp" value="{{ r.timestamp }}">
+              <button class="btn btn-sm btn-warning" {% if r.follow_up %}disabled{% endif %}>Flag</button>
+            </form>
+            <form action="{{ url_for('unflag_follow_up') }}" method="post">
+              <input type="hidden" name="timestamp" value="{{ r.timestamp }}">
+              <button class="btn btn-sm btn-outline-warning" {% if not r.follow_up %}disabled{% endif %}>Unflag</button>
+            </form>
+            <form action="{{ url_for('delete_record') }}" method="post" onsubmit="return confirm('Delete this record?');">
+              <input type="hidden" name="timestamp" value="{{ r.timestamp }}">
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="11">
+            <form class="d-flex gap-2 align-items-center" action="{{ url_for('doctor_reply') }}" method="post">
+              <input type="hidden" name="timestamp" value="{{ r.timestamp }}">
+              <input class="form-control" type="text" name="message" placeholder="Reply to patient..." required>
+              <button class="btn btn-primary btn-sm">Send</button>
+            </form>
+            {% if r.doctor_replies and r.doctor_replies|length %}
+              <div class="mt-2 small text-muted">Previous replies:
+                {% for m in r.doctor_replies %}
+                  <div>• {{ m.time }} — {{ m.message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No records yet.</div>
+{% endif %}
+{% endblock %}

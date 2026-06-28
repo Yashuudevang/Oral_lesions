@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}AI-Powered Oral Cancer Screening{% endblock %}
+{% block content %}
+
+<!-- Hero Section - CVAT Style -->
+<section class="hero-section" style="padding: 50px 0 40px;">
+  <div class="container">
+    <div class="row align-items-center">
+      
+      <!-- Text Section -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="hero-content">
+          <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 1rem;">
+            AI-Powered<br>
+            <span class="gradient-text">Oral Cancer</span><br>
+            Screening
+          </h1>
+          <p class="hero-subtitle" style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+            Quick, accurate AI screening for oral health. Trusted by healthcare professionals and patients worldwide.
+          </p>
+          
+          {% if session.username %}
+            <div class="d-flex gap-2 flex-wrap fade-in" style="flex-wrap: wrap; gap: 0.75rem;">
+              <a class="btn btn-primary" href="{{ url_for('start_screening') }}" style="padding: 10px 18px; font-size: 0.95rem;">
+                <i class="bi bi-camera-video me-1"></i> Start Screening
+              </a>
+              <a class="btn btn-outline-primary" href="{{ url_for('patient_dashboard') if session.role == 'patient' else url_for('doctor_dashboard') }}" style="padding: 10px 18px; font-size: 0.95rem;">
+                <i class="bi bi-bar-chart me-1"></i> Dashboard
+              </a>
+            </div>
+          {% else %}
+            <div class="fade-in">
+              <div class="d-flex gap-2 flex-wrap" style="gap: 0.75rem;">
+                <a class="btn btn-primary" href="{{ url_for('signup') }}" style="padding: 10px 18px; font-size: 0.95rem;">
+                  Start for free
+                </a>
+                <a class="btn btn-outline-primary" href="{{ url_for('login') }}" style="padding: 10px 18px; font-size: 0.95rem;">
+                  Sign In
+                </a>
+              </div>
+              <p class="text-muted small" style="font-size: 0.85rem; margin-top: 0.75rem;">
+                <i class="bi bi-shield-check me-1"></i>Free to start
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Image Section -->
+      <div class="col-lg-6 text-center">
+        <img src="{{ url_for('static', filename='img/oral_health_illustration.png') }}"
+             alt="Oral Screening Illustration"
+            class="hero-img img-fluid" style="max-width: 100%; height: auto; max-height: 280px; ">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trusted By Section -->
+<section class="section" style="background: var(--cvat-bg-secondary); padding: 40px 0;">
+  <div class="container">
+    <div class="text-center" style="margin-bottom: 2rem;">
+      <p class="text-muted mb-0" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
+        Why Choose Us
+      </p>
+    </div>
+    <div class="row text-center g-2">
+      <div class="col-md-4" style="margin-bottom: 1rem;">
+        <div class="stat-number" style="font-size: 2.2rem; color: var(--cvat-primary);">95%+</div>
+        <p class="text-muted mb-0" style="font-size: 0.9rem;">Accuracy</p>
+      </div>
+      <div class="col-md-4" style="margin-bottom: 1rem;">
+        <div class="stat-number" style="font-size: 2.2rem; color: var(--cvat-primary);">10K+</div>
+        <p class="text-muted mb-0" style="font-size: 0.9rem;">Screenings</p>
+      </div>
+      <div class="col-md-4" style="margin-bottom: 1rem;">
+        <div class="stat-number" style="font-size: 2.2rem; color: var(--cvat-primary);">24/7</div>
+        <p class="text-muted mb-0" style="font-size: 0.9rem;">Available</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section - CVAT Style -->
+<section class="section" style="padding: 40px 0;">
+  <div class="container">
+    <h2 class="section-title scroll-reveal" style="font-size: 2rem; margin-bottom: 2rem;">Who Benefits</h2>
+    
+    <div class="row g-3">
+      {% for title, desc, icon in [
+        ("Patients", "Validate what you're unsure of with significant time and cost savings.", "bi-people-fill"),
+        ("Smokers", "We're your guide as you seek access to accurate information and care.", "bi-fire"),
+        ("Academics", "Collaborate with us to create cutting-edge research impacting millions.", "bi-book-fill"),
+        ("NGOs", "Reach remote areas and deliver care even in offline mode.", "bi-globe2"),
+        ("Oncologists", "Get structured pre-screened reports to prioritize high-risk patients.", "bi-clipboard-check-fill"),
+        ("Rural Communities", "Access reliable screening even without nearby dental specialists.", "bi-phone-fill")
+      ] %}
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card scroll-reveal" style="padding: 1.25rem; background: transparent; border: none; box-shadow: none;">
+          <div class="d-flex align-items-start" style="gap: 0.75rem;">
+            <div class="feature-icon" style="font-size: 2rem; min-width: 2rem;">
+              <i class="bi {{ icon }}"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold" style="color: var(--cvat-text-primary); font-size: 1rem; margin-bottom: 0.5rem;">{{ title }}</h5>
+              <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.5;">{{ desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="section" style="background: var(--cvat-bg-secondary); padding: 40px 0;">
+  <div class="container">
+    <h2 class="section-title scroll-reveal" style="font-size: 2rem; margin-bottom: 2rem;">3 Simple Steps</h2>
+    
+    <div class="row g-3">
+      <div class="col-md-4 text-center scroll-reveal">
+        <div style="padding: 1.5rem;">
+          <div style="margin-bottom: 1rem;">
+            <div class="stat-number" style="font-size: 2.5rem; color: var(--cvat-primary);">1</div>
+          </div>
+          <h5 class="fw-bold" style="color: var(--cvat-text-primary); font-size: 1rem; margin-bottom: 0.75rem;">Upload Image</h5>
+          <p class="text-muted mb-0" style="font-size: 0.9rem;">Capture or upload your oral image</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 text-center scroll-reveal">
+        <div style="padding: 1.5rem;">
+          <div style="margin-bottom: 1rem;">
+            <div class="stat-number" style="font-size: 2.5rem; color: var(--cvat-primary);">2</div>
+          </div>
+          <h5 class="fw-bold" style="color: var(--cvat-text-primary); font-size: 1rem; margin-bottom: 0.75rem;">Fill Details</h5>
+          <p class="text-muted mb-0" style="font-size: 0.9rem;">Provide your medical info</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 text-center scroll-reveal">
+        <div style="padding: 1.5rem;">
+          <div style="margin-bottom: 1rem;">
+            <div class="stat-number" style="font-size: 2.5rem; color: var(--cvat-primary);">3</div>
+          </div>
+          <h5 class="fw-bold" style="color: var(--cvat-text-primary); font-size: 1rem; margin-bottom: 0.75rem;">Get Report</h5>
+          <p class="text-muted mb-0" style="font-size: 0.9rem;">Download PDF results</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+{% if not session.username %}
+<section class="section gradient-bg text-white" style="border-radius: 6px; margin: 40px auto; max-width: 1200px; padding: 40px 20px;">
+  <div class="container text-center">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 scroll-reveal">
+        <h2 class="fw-bold" style="font-size: 1.8rem; margin-bottom: 1rem;">Ready to Start?</h2>
+        <p style="font-size: 1rem; margin-bottom: 1.5rem; opacity: 0.95;">Get your AI-powered screening in minutes</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap" style="gap: 0.75rem;">
+          <a class="btn btn-light" href="{{ url_for('signup') }}" style="padding: 10px 18px; font-size: 0.95rem;">
+            Start for free
+          </a>
+          <a class="btn btn-outline-light" href="{{ url_for('login') }}" style="padding: 10px 18px; font-size: 0.95rem;">
+            Sign In
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<script>
+// Scroll reveal animation - CVAT style smoothness
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.scroll-reveal').forEach((el, index) => {
+  el.style.transitionDelay = `${index * 0.1}s`;
+  observer.observe(el);
+});
+</script>
+
+{% endblock %}

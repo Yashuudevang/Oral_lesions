@@ -1,0 +1,881 @@
+/* ============================================
+   CVAT.ai Inspired Theme & Design System
+   ============================================ */
+
+/* Color Palette - CVAT Style */
+:root {
+  --cvat-primary: #1890ff;
+  --cvat-primary-dark: #096dd9;
+  --cvat-primary-light: #40a9ff;
+  --cvat-secondary: #722ed1;
+  --cvat-success: #52c41a;
+  --cvat-warning: #faad14;
+  --cvat-error: #ff4d4f;
+  --cvat-text-primary: #262626;
+  --cvat-text-secondary: #595959;
+  --cvat-text-tertiary: #8c8c8c;
+  --cvat-bg-primary: #ffffff;
+  --cvat-bg-secondary: #fafafa;
+  --cvat-bg-tertiary: #f5f5f5;
+  --cvat-border: #d9d9d9;
+  --cvat-border-light: #f0f0f0;
+  --cvat-shadow: rgba(0, 0, 0, 0.08);
+  --cvat-shadow-hover: rgba(0, 0, 0, 0.12);
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--cvat-bg-primary);
+  color: var(--cvat-text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   NAVBAR - CVAT Style
+   ============================================ */
+.navbar {
+  background: var(--cvat-bg-primary) !important;
+  box-shadow: 0 2px 8px var(--cvat-shadow);
+  padding: 1rem 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid var(--cvat-border-light);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--cvat-text-primary) !important;
+  letter-spacing: -0.5px;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: var(--cvat-primary) !important;
+  transform: translateY(-1px);
+}
+
+.nav-link {
+  color: var(--cvat-text-secondary) !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--cvat-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+}
+
+.nav-link:hover {
+  color: var(--cvat-primary) !important;
+}
+
+.nav-link:hover::after {
+  width: 80%;
+}
+
+/* ============================================
+   BUTTONS - CVAT Style
+   ============================================ */
+.btn {
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 8px 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: var(--cvat-primary);
+  color: white;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--cvat-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-outline-primary {
+  background: transparent;
+  color: var(--cvat-primary);
+  border: 1px solid var(--cvat-primary);
+}
+
+.btn-outline-primary:hover {
+  background: var(--cvat-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+}
+
+.btn-light {
+  background: var(--cvat-bg-secondary);
+  color: var(--cvat-text-primary);
+  border: 1px solid var(--cvat-border);
+}
+
+.btn-light:hover {
+  background: var(--cvat-bg-tertiary);
+  border-color: var(--cvat-primary);
+  color: var(--cvat-primary);
+  transform: translateY(-2px);
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+/* ============================================
+   CARDS - CVAT Style
+   ============================================ */
+.card {
+  background: var(--cvat-bg-primary);
+  border: 1px solid var(--cvat-border-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--cvat-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px var(--cvat-shadow-hover);
+  transform: translateY(-4px);
+  border-color: var(--cvat-primary-light);
+}
+
+/* ============================================
+   HERO SECTION - CVAT Style
+   ============================================ */
+.hero-section {
+  padding: 120px 0 80px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(24, 144, 255, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(114, 46, 209, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--cvat-text-primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--cvat-text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+.hero-image {
+  animation: fadeInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================
+   FEATURE CARDS - CVAT Style
+   ============================================ */
+.feature-card {
+  background: var(--cvat-bg-primary);
+  border: 1px solid var(--cvat-border-light);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cvat-primary), var(--cvat-secondary));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px var(--cvat-shadow-hover);
+  border-color: var(--cvat-primary-light);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: var(--cvat-primary);
+  margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1) translateY(-4px);
+  color: var(--cvat-primary-dark);
+}
+
+/* ============================================
+   SCROLL REVEAL ANIMATIONS - CVAT Style
+   ============================================ */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   FADE IN ANIMATIONS
+   ============================================ */
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================
+   FILE INPUT - MOBILE OPTIMIZED
+   ============================================ */
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  padding: 8px 16px;
+  background: var(--cvat-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--cvat-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   FORMS - MOBILE OPTIMIZED
+   ============================================ */
+.form-control,
+.form-select {
+  border: 1px solid var(--cvat-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--cvat-bg-primary);
+  color: var(--cvat-text-primary);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--cvat-primary);
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+  outline: none;
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--cvat-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   ALERTS - CVAT Style
+   ============================================ */
+.alert {
+  border-radius: 6px;
+  border: 1px solid;
+  padding: 12px 16px;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-info {
+  background: rgba(24, 144, 255, 0.1);
+  border-color: var(--cvat-primary-light);
+  color: var(--cvat-primary-dark);
+}
+
+/* ============================================
+   GRADIENT TEXT - CVAT Style
+   ============================================ */
+.gradient-text {
+  background: linear-gradient(135deg, var(--cvat-primary) 0%, var(--cvat-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   STATS & NUMBERS
+   ============================================ */
+.stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--cvat-primary);
+  line-height: 1;
+}
+
+/* ============================================
+   SECTION STYLING
+   ============================================ */
+.section {
+  padding: 80px 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--cvat-text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* ============================================
+   GRADIENT BACKGROUNDS
+   ============================================ */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--cvat-primary) 0%, var(--cvat-secondary) 100%);
+  color: white;
+}
+
+/* ============================================
+   IMAGES
+   ============================================ */
+.hero-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px var(--cvat-shadow);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-img:hover {
+  transform: scale(1.02);
+}
+
+/* ============================================
+   FOOTER - CVAT Style
+   ============================================ */
+footer {
+  background: var(--cvat-bg-secondary);
+  border-top: 1px solid var(--cvat-border-light);
+  padding: 60px 0 40px;
+  margin-top: 80px;
+}
+
+footer a {
+  color: var(--cvat-text-secondary);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+footer a:hover {
+  color: var(--cvat-primary);
+  transform: translateX(4px);
+}
+
+/* ============================================
+   PROGRESS BAR - CVAT Style
+   ============================================ */
+.progress {
+  height: 8px;
+  background: var(--cvat-bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: var(--cvat-primary);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 4px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ============================================ */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .section {
+    padding: 60px 20px;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .navbar {
+    padding: 0.75rem 0;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  .nav-link {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .btn-lg {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  .feature-card {
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .hero-section {
+    padding: 80px 20px 60px;
+  }
+
+  /* Compact cards on mobile */
+  .card {
+    margin-bottom: 0.75rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .section {
+    padding: 40px 15px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-section {
+    padding: 60px 15px 40px;
+  }
+
+  .hero-section::before {
+    display: none;
+  }
+
+  .navbar {
+    padding: 0.5rem 0;
+  }
+
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .nav-link {
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+  }
+
+  .btn-lg {
+    padding: 10px 16px;
+  }
+
+  .card {
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-body {
+    padding: 0.75rem !important;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card {
+    padding: 1.25rem;
+    border-radius: 6px;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+  }
+
+  .stat-number {
+    font-size: 1.75rem;
+  }
+
+  .form-control,
+  .form-select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  footer {
+    padding: 40px 15px 30px;
+    margin-top: 60px;
+  }
+
+  .alert {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Mobile optimized spacing */
+  main {
+    margin-bottom: 1rem !important;
+  }
+
+  .mb-3 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem !important;
+  }
+
+  .gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-3 {
+    gap: 0.75rem !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Reduce padding on containers */
+  .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .px-3 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .py-4 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  /* Compact button spacing */
+  .d-grid {
+    gap: 0.5rem !important;
+  }
+
+  .btn-sm {
+    padding: 0.35rem 0.65rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Image optimization */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .img-fluid {
+    max-height: 120px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  html {
+    font-size: 12px;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .feature-card {
+    padding: 1rem;
+  }
+
+  .form-control,
+  .form-select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .card-body {
+    padding: 0.5rem !important;
+  }
+
+  /* Further reduce spacing */
+  main {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .mb-2 {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .mb-3 {
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* ============================================
+   SMOOTH TRANSITIONS
+   ============================================ */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-primary-cvat {
+  color: var(--cvat-primary);
+}
+
+.bg-primary-cvat {
+  background: var(--cvat-primary);
+}
+
+.border-primary-cvat {
+  border-color: var(--cvat-primary);
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  border: 3px solid var(--cvat-bg-tertiary);
+  border-top: 3px solid var(--cvat-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+/* ============================================
+   PULSE ANIMATION
+   ============================================ */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

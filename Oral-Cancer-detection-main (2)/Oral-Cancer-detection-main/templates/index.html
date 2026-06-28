@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% block title %}Start Screening{% endblock %}
+{% block content %}
+<div class="card fade-in" style="max-width: 900px; margin: 0 auto; border-radius: 8px; padding: 1rem;">
+  <div class="card-body" style="padding: 1rem;">
+    <div class="text-center mb-4">
+      <h2 class="mb-2 gradient-text" style="font-size: 1.75rem;">Screening Form</h2>
+      <p class="text-muted" style="font-size: 0.95rem;">Fill in the details below to get your AI-powered screening</p>
+    </div>
+    <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" class="row g-2">
+      <div class="col-12">
+        <label class="form-label" style="font-size: 0.95rem;">Mouth Image (jpg/png)</label>
+        <div style="position: relative; margin-bottom: 1rem;">
+          <input type="file" name="image" id="imageInput" accept="image/*" required 
+                 style="display: none;">
+          <button type="button" id="fileInputBtn" class="btn btn-outline-primary w-100" 
+                  style="padding: 12px; font-size: 0.95rem; text-align: center;">
+            <i class="bi bi-file-image me-2"></i>Choose Image from Device
+          </button>
+          <small id="fileNameDisplay" style="display: block; margin-top: 0.5rem; color: var(--cvat-primary); font-weight: 500;"></small>
+        </div>
+        
+        <div class="mt-3 p-3 rounded" style="background: var(--cvat-bg-secondary); border: 1px solid var(--cvat-border-light);">
+          <p class="text-muted mb-2 fw-bold" style="font-size: 0.9rem;">
+            <i class="bi bi-camera-fill me-2"></i>Or capture using camera:
+          </p>
+          <div class="d-flex gap-2 flex-wrap" style="gap: 0.5rem;">
+            <button type="button" id="cameraBtn" class="btn btn-info" style="padding: 8px 12px; font-size: 0.85rem; flex: 1; min-width: 100px;">
+              <i class="bi bi-camera-video me-1"></i>Open Camera
+            </button>
+            <button type="button" id="captureBtn" class="btn btn-primary" style="display:none; padding: 8px 12px; font-size: 0.85rem; flex: 1; min-width: 100px;">
+              <i class="bi bi-camera-fill me-1"></i>Capture
+            </button>
+            <button type="button" id="closeCamera" class="btn btn-secondary" style="display:none; padding: 8px 12px; font-size: 0.85rem; flex: 1; min-width: 100px;">
+              <i class="bi bi-x-circle me-1"></i>Close
+            </button>
+          </div>
+        </div>
+        
+        <div id="cameraContainer" style="display:none; margin-top:8px; text-align: center;">
+          <video id="video" autoplay playsinline style="width:100%; max-width:100%; height: auto; border:1px solid #ddd; border-radius:4px;"></video>
+        </div>
+        <div id="cameraError" style="display:none; margin-top:8px; color:#b00020; font-size:0.85rem; padding: 8px; background: rgba(176, 0, 32, 0.1); border-radius: 4px;"></div>
+        <div id="cameraFallback" style="display:none; margin-top:6px;">
+          <button type="button" id="openFileBtn" class="btn btn-light w-100" style="font-size:0.85rem; padding: 8px 12px;">Choose Image Instead</button>
+        </div>
+        
+        <div id="preview" style="margin-top:8px; text-align: center;"></div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" style="font-size: 0.9rem;">Pain Level</label>
+        <select class="form-select" name="pain_level" required style="font-size: 0.9rem;">
+          <option value="" selected disabled>Choose...</option>
+          <option>None</option><option>Mild</option><option>Moderate</option><option>High</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" style="font-size: 0.9rem;">Bleeding</label>
+        <select class="form-select" name="bleeding" required style="font-size: 0.9rem;">
+          <option value="" selected disabled>Choose...</option>
+          <option>Yes</option><option>No</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" style="font-size: 0.9rem;">Swelling</label>
+        <select class="form-select" name="swelling" required style="font-size: 0.9rem;">
+          <option value="" selected disabled>Choose...</option>
+          <option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label" style="font-size: 0.9rem;">Duration</label>
+        <input class="form-control" type="text" name="duration" placeholder="e.g., 2 weeks" style="font-size: 0.9rem;">
+      </div>
+      <div class="col-md-8">
+        <label class="form-label" style="font-size: 0.9rem;">Medical/Dental History</label>
+        <input class="form-control" type="text" name="history" placeholder="e.g., family history" style="font-size: 0.9rem;">
+      </div>
+
+      <div class="col-12">
+        <label class="form-label" style="font-size: 0.9rem;">Habits</label><br>
+        <div class="form-check form-check-inline" style="margin-right: 1rem;">
+          <input class="form-check-input" type="checkbox" id="habitTobacco" name="habits" value="Tobacco">
+          <label class="form-check-label" for="habitTobacco" style="font-size: 0.9rem;">Tobacco</label>
+        </div>
+        <div class="form-check form-check-inline" style="margin-right: 1rem;">
+          <input class="form-check-input" type="checkbox" id="habitAlcohol" name="habits" value="Alcohol">
+          <label class="form-check-label" for="habitAlcohol" style="font-size: 0.9rem;">Alcohol</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="habitSmoking" name="habits" value="Smoking">
+          <label class="form-check-label" for="habitSmoking" style="font-size: 0.9rem;">Smoking</label>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-size: 0.9rem;">Tobacco Years</label>
+        <input class="form-control" type="number" name="tobacco_years" min="0" step="1" style="font-size: 0.9rem;">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-size: 0.9rem;">Alcohol Years</label>
+        <input class="form-control" type="number" name="alcohol_years" min="0" step="1" style="font-size: 0.9rem;">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-size: 0.9rem;">Smoking Years</label>
+        <input class="form-control" type="number" name="smoking_years" min="0" step="1" style="font-size: 0.9rem;">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" style="font-size: 0.9rem;">Trismus Test</label>
+        <select class="form-select" name="trismus_test" style="font-size: 0.9rem;">
+          <option value="" selected>Not answered</option>
+          <option>Pass</option><option>Fail</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" style="font-size: 0.9rem;">Pain Opening Mouth</label>
+        <select class="form-select" name="mouth_pain" style="font-size: 0.9rem;">
+          <option value="" selected>Not answered</option>
+          <option>Yes</option><option>No</option>
+        </select>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label" style="font-size: 0.9rem;">Extra Details</label>
+        <textarea class="form-control" name="extra_details" rows="2" style="font-size: 0.9rem;"></textarea>
+      </div>
+
+      <div class="col-12 text-center mt-3">
+        <button class="btn btn-primary" type="submit" style="padding: 10px 20px; font-size: 0.95rem; width: 100%; margin-bottom: 0.5rem;">
+          <i class="bi bi-search me-2"></i>Start Prediction
+        </button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('index') }}" style="padding: 10px 20px; font-size: 0.95rem; width: 100%;">
+          <i class="bi bi-x-circle me-2"></i>Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+let stream = null;
+const video = document.getElementById('video');
+const cameraBtn = document.getElementById('cameraBtn');
+const captureBtn = document.getElementById('captureBtn');
+const closeCameraBtn = document.getElementById('closeCamera');
+const cameraContainer = document.getElementById('cameraContainer');
+const preview = document.getElementById('preview');
+const imageInput = document.getElementById('imageInput');
+const cameraErrorEl = document.getElementById('cameraError');
+const cameraFallback = document.getElementById('cameraFallback');
+const fileInputBtn = document.getElementById('fileInputBtn');
+const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+// File input button click handler
+if (fileInputBtn) {
+  fileInputBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    imageInput.click();
+  });
+}
+
+// Track file selection
+if (imageInput) {
+  imageInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const fileName = e.target.files[0].name;
+      fileNameDisplay.textContent = '✓ Selected: ' + fileName;
+      fileNameDisplay.style.color = 'var(--cvat-success)';
+    }
+  });
+}
+
+// Check if browser supports camera
+const hasCameraSupport = () => {
+  return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ||
+         !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia);
+};
+
+// Initialize: show file upload option if no camera
+window.addEventListener('load', () => {
+  if (!hasCameraSupport()) {
+    cameraErrorEl.innerHTML = 'Camera not supported. Please upload an image using the file input above.' +
+      '<br><small>To enable camera from other devices, expose this server over HTTPS (example: <code>ngrok http 5000</code>) and open the provided <strong>https://</strong> URL on your device.</small>';
+    cameraErrorEl.style.display = 'block';
+    cameraBtn.style.display = 'none';
+    cameraFallback.style.display = 'block';
+  }
+});
+
+cameraBtn.addEventListener('click', async () => {
+  cameraErrorEl.style.display = 'none';
+  cameraFallback.style.display = 'none';
+
+  const getMedia = async (constraints) => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      return navigator.mediaDevices.getUserMedia(constraints);
+    }
+    const legacy = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if (legacy) {
+      return new Promise((resolve, reject) => legacy.call(navigator, constraints, resolve, reject));
+    }
+    throw new Error('Camera not supported');
+  };
+
+  try {
+    stream = await getMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } } });
+    video.srcObject = stream;
+    cameraContainer.style.display = 'block';
+    cameraBtn.style.display = 'none';
+    captureBtn.style.display = 'inline-block';
+    closeCameraBtn.style.display = 'inline-block';
+  } catch (err) {
+    console.error('Camera error:', err);
+    cameraErrorEl.innerHTML = 'Camera access denied or not available. Please upload an image using the file input above.' +
+      '<br><small>If you want to access the camera from another device, run your server over HTTPS (for example: <code>ngrok http 5000</code>) and open the HTTPS URL provided by ngrok on your device. Some browsers require HTTPS for camera access.</small>';
+    cameraErrorEl.style.display = 'block';
+    cameraFallback.style.display = 'block';
+  }
+});
+
+const openFileBtn = document.getElementById('openFileBtn');
+if (openFileBtn) openFileBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  imageInput.click();
+});
+
+captureBtn.addEventListener('click', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  
+  canvas.toBlob((blob) => {
+    const file = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' });
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    imageInput.files = dataTransfer.files;
+    
+    // Update file name display
+    fileNameDisplay.textContent = '✓ Selected: camera-capture.jpg';
+    fileNameDisplay.style.color = 'var(--cvat-success)';
+    
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(blob);
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '300px';
+    img.style.border = '1px solid #ddd';
+    img.style.borderRadius = '4px';
+    img.style.marginTop = '10px';
+    preview.innerHTML = '';
+    preview.appendChild(img);
+    
+    closeCamera();
+  }, 'image/jpeg', 0.95);
+});
+
+closeCameraBtn.addEventListener('click', () => {
+  closeCamera();
+});
+
+function closeCamera() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
+  video.srcObject = null;
+  cameraContainer.style.display = 'none';
+  cameraBtn.style.display = 'inline-block';
+  captureBtn.style.display = 'none';
+  closeCameraBtn.style.display = 'none';
+}
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+  closeCamera();
+});
+</script>
+{% endblock %}
